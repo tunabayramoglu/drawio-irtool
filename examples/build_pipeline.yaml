@@ -1,0 +1,97 @@
+diagram:
+  type: activity
+  title: "CI/CD Build Pipeline"
+  swimlanes:
+    - id: developer
+      name: Developer
+      color: "#E3F2FD"
+    - id: build_system
+      name: Build System
+      color: "#F3E5F5"
+    - id: qa
+      name: QA
+      color: "#E8F5E9"
+    - id: ops
+      name: DevOps
+      color: "#FFF3E0"
+  activities:
+    - id: push_code
+      type: start
+      swimlane: developer
+    - id: checkout
+      type: normal
+      swimlane: build_system
+      name: Checkout Repository
+    - id: run_tests
+      type: normal
+      swimlane: build_system
+      name: Run Unit Tests
+    - id: tests_pass
+      type: decision
+      swimlane: build_system
+      name: Tests Pass?
+    - id: build_artifact
+      type: normal
+      swimlane: build_system
+      name: Build Artifact
+    - id: stage_deploy
+      type: normal
+      swimlane: ops
+      name: Deploy to Staging
+    - id: run_e2e
+      type: normal
+      swimlane: qa
+      name: Run E2E Tests
+    - id: e2e_pass
+      type: decision
+      swimlane: qa
+      name: E2E Pass?
+    - id: prod_deploy
+      type: normal
+      swimlane: ops
+      name: Deploy to Production
+    - id: notify_failure
+      type: normal
+      swimlane: qa
+      name: Notify Failure
+    - id: notify_success
+      type: normal
+      swimlane: developer
+      name: Notify Success
+    - id: failed
+      type: end
+      swimlane: qa
+    - id: done
+      type: end
+      swimlane: developer
+  transitions:
+    - from: push_code
+      to: checkout
+    - from: checkout
+      to: run_tests
+    - from: run_tests
+      to: tests_pass
+    - from: tests_pass
+      to: build_artifact
+      label: "yes"
+    - from: tests_pass
+      to: notify_failure
+      label: "no"
+    - from: build_artifact
+      to: stage_deploy
+    - from: stage_deploy
+      to: run_e2e
+    - from: run_e2e
+      to: e2e_pass
+    - from: e2e_pass
+      to: prod_deploy
+      label: "yes"
+    - from: e2e_pass
+      to: notify_failure
+      label: "no"
+    - from: prod_deploy
+      to: notify_success
+    - from: notify_failure
+      to: failed
+    - from: notify_success
+      to: done

@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="irtool" agent="irtool" version="1.0.0">
+  <diagram name="Order Lifecycle" id="d1">
+    <mxGraphModel dx="1100" dy="1160" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1160">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0">
+          <mxGeometry width="1100" height="1160" as="geometry"/>
+        </mxCell>
+        <mxCell id="__title__" value="Order Lifecycle" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="16" width="1060" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="__description__" value="Hierarchical state machine — Active is a composite of three sub-states." style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=2;fontColor=#666666;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="52" width="1060" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="pending" value="Pending" style="rounded=1;arcSize=40;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="200.0" y="180" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="cancelled" value="Cancelled" style="rounded=1;arcSize=40;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="200.0" y="380" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="active_history" value="H" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontSize=14;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="active">
+          <mxGeometry x="94.0" y="62.0" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="processing" value="Processing" style="rounded=1;arcSize=40;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="active">
+          <mxGeometry x="30.0" y="243.0" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="shipped" value="Shipped" style="rounded=1;arcSize=40;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="active">
+          <mxGeometry x="30.0" y="443.0" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="delivered" value="Delivered" style="rounded=1;arcSize=40;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="active">
+          <mxGeometry x="30.0" y="643.0" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="active" value="Active" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;container=1;fillColor=#f8f8f8;strokeColor=#888888;fontSize=14;fontStyle=1;verticalAlign=top;spacingTop=6;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="410.0" y="337.0" width="220.0" height="743.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="closed" value="Closed" style="rounded=1;arcSize=40;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="800.0" y="180" width="160" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="__init__pending" value="" style="ellipse;fillColor=#000000;strokeColor=#000000;html=1;" vertex="1" parent="1">
+          <mxGeometry x="268.0" y="110" width="24" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="__final__cancelled" value="" style="ellipse;shape=endState;fillColor=#000000;strokeColor=#000000;fillColor=#ffffff;perimeter=ellipsePerimeter;html=1;" vertex="1" parent="1">
+          <mxGeometry x="268.0" y="510" width="24" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="__final__closed" value="" style="ellipse;shape=endState;fillColor=#000000;strokeColor=#000000;fillColor=#ffffff;perimeter=ellipsePerimeter;html=1;" vertex="1" parent="1">
+          <mxGeometry x="868.0" y="310" width="24" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_0" value="confirm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;" edge="1" parent="1" source="pending" target="active_history">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;" edge="1" parent="1" source="active_history" target="processing">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_2" value="cancel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;" edge="1" parent="1" source="pending" target="cancelled">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_3" value="ship" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;" edge="1" parent="1" source="processing" target="shipped">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_4" value="deliver" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;" edge="1" parent="1" source="shipped" target="delivered">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_5" value="complete" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;" edge="1" parent="1" source="active" target="closed">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="__init_edge__pending" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;" edge="1" parent="1" source="__init__pending" target="pending">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="__final_edge__cancelled" value="Exit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;" edge="1" parent="1" source="cancelled" target="__final__cancelled">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="__final_edge__closed" value="Exit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;" edge="1" parent="1" source="closed" target="__final__closed">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

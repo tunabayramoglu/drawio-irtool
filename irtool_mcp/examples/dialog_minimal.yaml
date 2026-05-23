@@ -1,0 +1,14 @@
+diagram:
+  type: dialog
+  title: Minimal Dialog Map
+  dialogs:
+    - id: home
+    - id: catalog
+    - id: product
+  transitions:
+    - from: home
+      to: catalog
+      trigger: Browse
+    - from: catalog
+      to: product
+      trigger: Select

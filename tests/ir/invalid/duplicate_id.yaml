@@ -1,0 +1,12 @@
+diagram:
+  type: dfd
+  title: Duplicate IDs
+  entities:
+    - id: same
+      type: external_entity
+    - id: same
+      type: process
+  flows:
+    - from: same
+      to: same
+      label: self

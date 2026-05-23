@@ -1,0 +1,10 @@
+diagram:
+  type: std
+  title: No Initial State
+  states:
+    - id: a
+    - id: b
+      is_final: true
+  transitions:
+    - from: a
+      to: b

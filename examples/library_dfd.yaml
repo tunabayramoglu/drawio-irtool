@@ -1,0 +1,85 @@
+diagram:
+  type: dfd
+  title: "Library Management — DFD Level 1"
+  description: "Member-facing borrowing flow with catalog and inventory."
+  level: 1
+  entities:
+    - id: member
+      name: Member
+      type: external_entity
+    - id: librarian
+      name: Librarian
+      type: external_entity
+    - id: supplier
+      name: Supplier
+      type: external_entity
+
+    - id: auth
+      name: Authenticate
+      type: process
+    - id: search
+      name: Search Catalog
+      type: process
+    - id: borrow
+      name: Borrow Book
+      type: process
+    - id: return_book
+      name: Return Book
+      type: process
+    - id: restock
+      name: Restock Inventory
+      type: process
+
+    - id: users_db
+      name: Members DB
+      type: store
+    - id: catalog_db
+      name: Catalog DB
+      type: store
+    - id: loans_db
+      name: Loans DB
+      type: store
+
+  flows:
+    - from: member
+      to: auth
+      label: credentials
+    - from: auth
+      to: users_db
+      label: verify
+    - from: member
+      to: search
+      label: query
+    - from: search
+      to: catalog_db
+      label: lookup
+    - from: catalog_db
+      to: search
+      label: results
+    - from: member
+      to: borrow
+      label: book request
+    - from: borrow
+      to: loans_db
+      label: record loan
+    - from: borrow
+      to: catalog_db
+      label: mark borrowed
+    - from: member
+      to: return_book
+      label: return book
+    - from: return_book
+      to: loans_db
+      label: close loan
+    - from: return_book
+      to: catalog_db
+      label: mark available
+    - from: librarian
+      to: restock
+      label: shipment received
+    - from: supplier
+      to: restock
+      label: new books
+    - from: restock
+      to: catalog_db
+      label: add titles

@@ -1,0 +1,21 @@
+diagram:
+  type: activity
+  title: Minimal Activity
+  swimlanes:
+    - id: lane1
+      name: User
+  activities:
+    - id: a_start
+      type: start
+      swimlane: lane1
+    - id: do_thing
+      type: normal
+      swimlane: lane1
+    - id: a_end
+      type: end
+      swimlane: lane1
+  transitions:
+    - from: a_start
+      to: do_thing
+    - from: do_thing
+      to: a_end

@@ -1,0 +1,15 @@
+diagram:
+  type: activity
+  title: Unknown Swimlane Reference
+  swimlanes:
+    - id: known
+  activities:
+    - id: s
+      type: start
+      swimlane: ghost
+    - id: e
+      type: end
+      swimlane: known
+  transitions:
+    - from: s
+      to: e

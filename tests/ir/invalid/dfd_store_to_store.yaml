@@ -1,0 +1,12 @@
+diagram:
+  type: dfd
+  title: Store-to-Store
+  entities:
+    - id: db1
+      type: store
+    - id: db2
+      type: store
+  flows:
+    - from: db1
+      to: db2
+      label: copy

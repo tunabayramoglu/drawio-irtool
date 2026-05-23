@@ -1,0 +1,102 @@
+diagram:
+  type: class
+  title: "E-Commerce Order System"
+  description: "Customer places an order containing items, paid via a PaymentMethod implementation."
+  classes:
+    - id: customer
+      name: Customer
+      attributes:
+        - "id: UUID"
+        - "name: String"
+        - "email: String"
+      methods:
+        - "placeOrder(): Order"
+        - "viewHistory(): List<Order>"
+
+    - id: order
+      name: Order
+      attributes:
+        - "orderId: UUID"
+        - "createdAt: DateTime"
+        - "status: OrderStatus"
+      methods:
+        - "addItem(item: OrderItem)"
+        - "total(): Money"
+        - "pay(method: PaymentMethod)"
+
+    - id: order_item
+      name: OrderItem
+      attributes:
+        - "quantity: int"
+        - "unitPrice: Money"
+      methods:
+        - "subtotal(): Money"
+
+    - id: product
+      name: Product
+      attributes:
+        - "sku: String"
+        - "name: String"
+        - "price: Money"
+      methods:
+        - "isInStock(): bool"
+
+    - id: payment_method
+      name: PaymentMethod
+      is_interface: true
+      methods:
+        - "+ charge(amount: Money): bool"
+        - "+ refund(amount: Money): bool"
+
+    - id: credit_card
+      name: CreditCardPayment
+      attributes:
+        - "cardNumber: String"
+        - "expiry: Date"
+      methods:
+        - "charge(amount: Money): bool"
+        - "refund(amount: Money): bool"
+
+    - id: paypal
+      name: PayPalPayment
+      attributes:
+        - "accountEmail: String"
+      methods:
+        - "charge(amount: Money): bool"
+        - "refund(amount: Money): bool"
+
+  relationships:
+    - from: customer
+      to: order
+      type: aggregation
+      label: places
+      source_multiplicity: "1"
+      target_multiplicity: "0..*"
+      target_role: orders
+
+    - from: order
+      to: order_item
+      type: composition
+      label: contains
+      source_multiplicity: "1"
+      target_multiplicity: "1..*"
+      target_role: items
+
+    - from: order_item
+      to: product
+      type: association
+      multiplicity: "1"
+      label: refers to
+
+    - from: order
+      to: payment_method
+      type: association
+      label: paid with
+
+    - from: credit_card
+      to: payment_method
+      type: realization
+
+    - from: paypal
+      to: payment_method
+      type: realization

@@ -1,0 +1,17 @@
+diagram:
+  type: sequence
+  title: Minimal Sequence
+  objects:
+    - id: user
+      type: actor
+    - id: ui
+      type: boundary
+    - id: ctrl
+      type: control
+  messages:
+    - from: user
+      to: ui
+      label: click
+    - from: ui
+      to: ctrl
+      label: dispatch

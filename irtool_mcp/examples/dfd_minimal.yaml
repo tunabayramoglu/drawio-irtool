@@ -1,0 +1,17 @@
+diagram:
+  type: dfd
+  title: Minimal DFD
+  entities:
+    - id: customer
+      type: external_entity
+    - id: order_proc
+      type: process
+    - id: orders_db
+      type: store
+  flows:
+    - from: customer
+      to: order_proc
+      label: place order
+    - from: order_proc
+      to: orders_db
+      label: save

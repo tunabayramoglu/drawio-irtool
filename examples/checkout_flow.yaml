@@ -1,0 +1,56 @@
+diagram:
+  type: dialog
+  title: "Checkout Flow"
+  dialogs:
+    - id: shopping_cart
+      name: "Shopping Cart"
+      is_initial: true
+    - id: address_selection
+      name: "Address Selection"
+    - id: add_address_form
+      name: "Add Address Form"
+    - id: shipping_method
+      name: "Shipping Method"
+    - id: stock_error_message
+      name: "Stock Error Message"
+    - id: payment_interface
+      name: "Payment Interface"
+    - id: payment_error_message
+      name: "Payment Error Message"
+    - id: order_confirmation
+      name: "Order Confirmation"
+      is_final: true
+  transitions:
+    - from: shopping_cart
+      to: address_selection
+      trigger: "Proceed to Checkout"
+    - from: address_selection
+      to: add_address_form
+      trigger: "Add new address"
+    - from: add_address_form
+      to: address_selection
+      trigger: "Save / Cancel"
+    - from: address_selection
+      to: shipping_method
+      trigger: "Select address"
+    - from: shipping_method
+      to: payment_interface
+      trigger: "Select carrier"
+    - from: payment_interface
+      to: stock_error_message
+      trigger: "Stock conflict / unavailable"
+    - from: stock_error_message
+      to: shopping_cart
+      trigger: "OK"
+    - from: payment_interface
+      to: payment_error_message
+      trigger: "Payment declined"
+    - from: payment_error_message
+      to: payment_interface
+      trigger: "OK"
+    - from: payment_interface
+      to: payment_interface
+      trigger: "Select Saved Card"
+    - from: payment_interface
+      to: order_confirmation
+      trigger: "Payment successful"

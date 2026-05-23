@@ -1,0 +1,17 @@
+diagram:
+  type: class
+  title: Inheritance Cycle
+  classes:
+    - id: a
+    - id: b
+    - id: c
+  relationships:
+    - from: a
+      to: b
+      type: inheritance
+    - from: b
+      to: c
+      type: inheritance
+    - from: c
+      to: a
+      type: inheritance

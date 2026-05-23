@@ -1,0 +1,4 @@
+: not: valid: yaml
+  - because
+  -:
+foo bar: [unclosed

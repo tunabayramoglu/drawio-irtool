@@ -1,0 +1,15 @@
+diagram:
+  type: std
+  title: Multiple Initial States
+  states:
+    - id: a
+      is_initial: true
+    - id: b
+      is_initial: true
+    - id: c
+      is_final: true
+  transitions:
+    - from: a
+      to: c
+    - from: b
+      to: c

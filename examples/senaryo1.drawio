@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="irtool" agent="irtool" version="1.0.0">
+  <diagram name="Senaryo #1" id="d1">
+    <mxGraphModel dx="1440" dy="1027" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1027">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0">
+          <mxGeometry width="1440" height="1027" as="geometry"/>
+        </mxCell>
+        <mxCell id="__title__" value="Senaryo #1" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="16" width="1400" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="__frame_0__" value="&lt;b&gt;loop&lt;/b&gt; [her durak için (durak1..durak3)]" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#888888;strokeWidth=1.5;verticalAlign=top;align=left;spacingTop=22;spacingLeft=8;fontSize=11;fontStyle=0;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="392" y="294" width="1016" height="215" as="geometry"/>
+        </mxCell>
+        <mxCell id="ortools" value="OR-Tools" style="shape=umlLifeline;perimeter=lifelinePerimeter;container=1;dropTarget=0;size=40;fontSize=13;fontStyle=1;fontColor=#FFFFFF;fillColor=#1a1a1a;strokeColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="60" y="132" width="240" height="835" as="geometry"/>
+        </mxCell>
+        <mxCell id="smach" value="SMACH" style="shape=umlLifeline;perimeter=lifelinePerimeter;container=1;dropTarget=0;size=40;fontSize=13;fontStyle=1;fontColor=#FFFFFF;fillColor=#1a1a1a;strokeColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="420" y="132" width="240" height="835" as="geometry"/>
+        </mxCell>
+        <mxCell id="algilama" value="Algılama (YOLOv26ş + FEC)" style="shape=umlLifeline;perimeter=lifelinePerimeter;container=1;dropTarget=0;size=40;fontSize=13;fontStyle=1;fontColor=#FFFFFF;fillColor=#1a1a1a;strokeColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="780" y="132" width="240" height="835" as="geometry"/>
+        </mxCell>
+        <mxCell id="kontrol" value="Kontrol (Stanley + PID)" style="shape=umlLifeline;perimeter=lifelinePerimeter;container=1;dropTarget=0;size=40;fontSize=13;fontStyle=1;fontColor=#FFFFFF;fillColor=#1a1a1a;strokeColor=#1a1a1a;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="132" width="240" height="835" as="geometry"/>
+        </mxCell>
+        <mxCell id="__act_smach_0__" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="534.0" y="206" width="12" height="61" as="geometry"/>
+        </mxCell>
+        <mxCell id="__act_smach_2__" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="534.0" y="316" width="12" height="61" as="geometry"/>
+        </mxCell>
+        <mxCell id="__act_smach_6__" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="534.0" y="536" width="12" height="61" as="geometry"/>
+        </mxCell>
+        <mxCell id="__act_smach_9__" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="534.0" y="701" width="12" height="116" as="geometry"/>
+        </mxCell>
+        <mxCell id="__act_kontrol_1__" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1254.0" y="261" width="12" height="686.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="__act_ortools_12__" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="174.0" y="866" width="12" height="81.0" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_0" value="1: Waypoint sırası — durak1, durak2, durak3, park" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.09580838323353294;exitDx=0;exitDy=0;entryX=0.5;entryY=0.09580838323353294;entryDx=0;entryDy=0" edge="1" parent="1" source="ortools" target="smach">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_1" value="2: INIT → FOLLOW_LANE, hedef hız 18 km/h" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.16167664670658682;exitDx=0;exitDy=0;entryX=0.5;entryY=0.16167664670658682;entryDx=0;entryDy=0" edge="1" parent="1" source="smach" target="kontrol">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_2" value="3: Durak1 tespiti" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.2275449101796407;exitDx=0;exitDy=0;entryX=0.5;entryY=0.2275449101796407;entryDx=0;entryDy=0" edge="1" parent="1" source="algilama" target="smach">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_3" value="4: STOP_AT_BUS_STOP, hız = 0" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.2934131736526946;exitDx=0;exitDy=0;entryX=0.5;entryY=0.2934131736526946;entryDx=0;entryDy=0" edge="1" parent="1" source="smach" target="kontrol">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_4" value="5: PICKUP timer başlat (15–20 sn)" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;jettySize=auto;orthogonalLoop=1;;exitX=1.0;exitY=0.3592814371257485;exitDx=0;exitDy=0;entryX=1.0;entryY=0.40718562874251496;entryDx=0;entryDy=0" edge="1" parent="1" source="smach" target="smach">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="432"/>
+              <mxPoint x="700" y="472"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_5" value="6: FOLLOW_LANE" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.4251497005988024;exitDx=0;exitDy=0;entryX=0.5;entryY=0.4251497005988024;entryDx=0;entryDy=0" edge="1" parent="1" source="smach" target="kontrol">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_6" value="7: FEC statik engel, d &lt; d_min" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.49101796407185627;exitDx=0;exitDy=0;entryX=0.5;entryY=0.49101796407185627;entryDx=0;entryDy=0" edge="1" parent="1" source="algilama" target="smach">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_7" value="8: OBSTACLE_STATIC → LANE_CHANGE, SET_SIGNAL" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.5568862275449101;exitDx=0;exitDy=0;entryX=0.5;entryY=0.5568862275449101;entryDx=0;entryDy=0" edge="1" parent="1" source="smach" target="kontrol">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_8" value="9: FOLLOW_LANE, CLEAR_SIGNAL" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.6227544910179641;exitDx=0;exitDy=0;entryX=0.5;entryY=0.6227544910179641;entryDx=0;entryDy=0" edge="1" parent="1" source="smach" target="kontrol">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_9" value="10: Park görevi" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.688622754491018;exitDx=0;exitDy=0;entryX=0.5;entryY=0.688622754491018;entryDx=0;entryDy=0" edge="1" parent="1" source="ortools" target="smach">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_10" value="11: FEC boş slot tespiti" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.7544910179640718;exitDx=0;exitDy=0;entryX=0.5;entryY=0.7544910179640718;entryDx=0;entryDy=0" edge="1" parent="1" source="algilama" target="smach">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_11" value="12: PARK_APPROACH → PARK_MANEUVER" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.8203592814371258;exitDx=0;exitDy=0;entryX=0.5;entryY=0.8203592814371258;entryDx=0;entryDy=0" edge="1" parent="1" source="smach" target="kontrol">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_12" value="13: MISSION_COMPLETE" style="html=1;endArrow=block;endFill=1;strokeWidth=1.5;fontSize=12;;exitX=0.5;exitY=0.8862275449101796;exitDx=0;exitDy=0;entryX=0.5;entryY=0.8862275449101796;entryDx=0;entryDy=0" edge="1" parent="1" source="smach" target="ortools">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

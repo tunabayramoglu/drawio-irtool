@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="irtool" agent="irtool" version="1.0.0">
+  <diagram name="HR / Organization Model" id="d1">
+    <mxGraphModel dx="1260" dy="1084" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1260" pageHeight="1084">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0">
+          <mxGeometry width="1260" height="1084" as="geometry"/>
+        </mxCell>
+        <mxCell id="__title__" value="HR / Organization Model" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="16" width="1220" height="36" as="geometry"/>
+        </mxCell>
+        <mxCell id="__description__" value="Person hierarchy with departments, projects, and addresses." style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=2;fontColor=#666666;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="20" y="52" width="1220" height="28" as="geometry"/>
+        </mxCell>
+        <mxCell id="address" value="&lt;b&gt;Address&lt;/b&gt;&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#c62828;font-weight:bold'&gt;-&lt;/span&gt; street: String&lt;br&gt;&lt;span style='color:#c62828;font-weight:bold'&gt;-&lt;/span&gt; city: String&lt;br&gt;&lt;span style='color:#c62828;font-weight:bold'&gt;-&lt;/span&gt; country: String" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="240.0" y="160" width="240" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="department" value="&lt;b&gt;Department&lt;/b&gt;&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; code: String&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; name: String&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; headcount(): int" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="240.0" y="408" width="240" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="project" value="&lt;b&gt;Project&lt;/b&gt;&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; code: String&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; name: String&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; deadline: Date&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; totalHours(): int" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="960.0" y="408" width="240" height="138" as="geometry"/>
+        </mxCell>
+        <mxCell id="person" value="&lt;b&gt;&lt;i&gt;Person&lt;/i&gt;&lt;/b&gt;&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#f57c00;font-weight:bold'&gt;#&lt;/span&gt; id: UUID&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; fullName: String&lt;br&gt;&lt;span style='color:#f57c00;font-weight:bold'&gt;#&lt;/span&gt; email: String&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; fullName(): String" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="600.0" y="160" width="240" height="138" as="geometry"/>
+        </mxCell>
+        <mxCell id="employee" value="&lt;b&gt;Employee&lt;/b&gt;&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; employeeNo: String&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; hireDate: Date&lt;br&gt;&lt;span style='color:#c62828;font-weight:bold'&gt;-&lt;/span&gt; salary: Money&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; payroll(): Money&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; isOnLeave(): bool" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="600.0" y="408" width="240" height="156" as="geometry"/>
+        </mxCell>
+        <mxCell id="manager" value="&lt;b&gt;Manager&lt;/b&gt;&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; directReports: int&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; approveLeave(e: Employee): bool&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; runReview(e: Employee)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="420.0" y="674" width="240" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="engineer" value="&lt;b&gt;Engineer&lt;/b&gt;&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; stack: List&lt;String&gt;&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; commit(code: String)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="780.0" y="674" width="240" height="102" as="geometry"/>
+        </mxCell>
+        <mxCell id="senior_engineer" value="&lt;b&gt;SeniorEngineer&lt;/b&gt;&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; mentees: int&lt;br&gt;&lt;hr style='margin:2px 0'&gt;&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; review(pr: PullRequest)&lt;br&gt;&lt;span style='color:#2e7d32;font-weight:bold'&gt;+&lt;/span&gt; mentor(e: Engineer)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=top;spacingLeft=10;spacingTop=6;spacingBottom=6;" vertex="1" parent="1">
+          <mxGeometry x="780.0" y="904" width="240" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_0" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;endArrow=block;endFill=0;" edge="1" parent="1" source="employee" target="person">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;endArrow=block;endFill=0;" edge="1" parent="1" source="manager" target="employee">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;endArrow=block;endFill=0;" edge="1" parent="1" source="engineer" target="employee">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;endArrow=block;endFill=0;" edge="1" parent="1" source="senior_engineer" target="engineer">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_4" value="lives at 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;endArrow=none;startArrow=diamondThin;startFill=1;startSize=14;" edge="1" parent="1" source="person" target="address">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_5" value="leads 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;endArrow=open;" edge="1" parent="1" source="manager" target="department">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_6" value="employs 1..*" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;endArrow=none;startArrow=diamondThin;startFill=0;startSize=14;" edge="1" parent="1" source="department" target="employee">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_7" value="staffed by *" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=0;endArrow=block;endArrow=open;" edge="1" parent="1" source="project" target="employee">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

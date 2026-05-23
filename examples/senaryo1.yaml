@@ -1,0 +1,62 @@
+diagram:
+  type: sequence
+  title: "Senaryo #1"
+  objects:
+    - id: ortools
+      name: "OR-Tools"
+      type: control
+    - id: smach
+      name: "SMACH"
+      type: control
+    - id: algilama
+      name: "Algılama (YOLOv26ş + FEC)"
+      type: control
+    - id: kontrol
+      name: "Kontrol (Stanley + PID)"
+      type: control
+  frames:
+    - type: loop
+      condition: "her durak için (durak1..durak3)"
+      from_message: 2
+      to_message: 5
+  messages:
+    - from: ortools
+      to: smach
+      label: "1: Waypoint sırası — durak1, durak2, durak3, park"
+    - from: smach
+      to: kontrol
+      label: "2: INIT → FOLLOW_LANE, hedef hız 18 km/h"
+    - from: algilama
+      to: smach
+      label: "3: Durak1 tespiti"
+    - from: smach
+      to: kontrol
+      label: "4: STOP_AT_BUS_STOP, hız = 0"
+    - from: smach
+      to: smach
+      type: self
+      label: "5: PICKUP timer başlat (15–20 sn)"
+    - from: smach
+      to: kontrol
+      label: "6: FOLLOW_LANE"
+    - from: algilama
+      to: smach
+      label: "7: FEC statik engel, d < d_min"
+    - from: smach
+      to: kontrol
+      label: "8: OBSTACLE_STATIC → LANE_CHANGE, SET_SIGNAL"
+    - from: smach
+      to: kontrol
+      label: "9: FOLLOW_LANE, CLEAR_SIGNAL"
+    - from: ortools
+      to: smach
+      label: "10: Park görevi"
+    - from: algilama
+      to: smach
+      label: "11: FEC boş slot tespiti"
+    - from: smach
+      to: kontrol
+      label: "12: PARK_APPROACH → PARK_MANEUVER"
+    - from: smach
+      to: ortools
+      label: "13: MISSION_COMPLETE"

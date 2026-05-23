@@ -1,0 +1,48 @@
+diagram:
+  type: std
+  title: "Order Lifecycle"
+  description: "Hierarchical state machine — Active is a composite of three sub-states."
+  states:
+    - id: pending
+      name: Pending
+      is_initial: true
+    - id: active
+      name: Active
+    - id: active_history
+      name: ""
+      is_history: true
+      parent: active
+    - id: processing
+      name: Processing
+      parent: active
+    - id: shipped
+      name: Shipped
+      parent: active
+    - id: delivered
+      name: Delivered
+      parent: active
+    - id: cancelled
+      name: Cancelled
+      is_final: true
+    - id: closed
+      name: Closed
+      is_final: true
+  transitions:
+    - from: pending
+      to: active_history
+      event: confirm
+    - from: active_history
+      to: processing
+      event: ""
+    - from: pending
+      to: cancelled
+      event: cancel
+    - from: processing
+      to: shipped
+      event: ship
+    - from: shipped
+      to: delivered
+      event: deliver
+    - from: active
+      to: closed
+      event: complete

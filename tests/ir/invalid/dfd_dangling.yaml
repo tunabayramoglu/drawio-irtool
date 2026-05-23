@@ -1,0 +1,12 @@
+diagram:
+  type: dfd
+  title: Dangling Flow
+  entities:
+    - id: user
+      type: external_entity
+    - id: proc
+      type: process
+  flows:
+    - from: user
+      to: nonexistent
+      label: x

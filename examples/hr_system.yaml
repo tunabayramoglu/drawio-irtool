@@ -1,0 +1,112 @@
+diagram:
+  type: class
+  title: "HR / Organization Model"
+  description: "Person hierarchy with departments, projects, and addresses."
+  classes:
+    - id: address
+      name: Address
+      attributes:
+        - "- street: String"
+        - "- city: String"
+        - "- country: String"
+
+    - id: department
+      name: Department
+      attributes:
+        - "+ code: String"
+        - "+ name: String"
+      methods:
+        - "+ headcount(): int"
+
+    - id: project
+      name: Project
+      attributes:
+        - "+ code: String"
+        - "+ name: String"
+        - "+ deadline: Date"
+      methods:
+        - "+ totalHours(): int"
+
+    - id: person
+      name: Person
+      is_abstract: true
+      attributes:
+        - "# id: UUID"
+        - "+ fullName: String"
+        - "# email: String"
+      methods:
+        - "+ fullName(): String"
+
+    - id: employee
+      name: Employee
+      attributes:
+        - "+ employeeNo: String"
+        - "+ hireDate: Date"
+        - "- salary: Money"
+      methods:
+        - "+ payroll(): Money"
+        - "+ isOnLeave(): bool"
+
+    - id: manager
+      name: Manager
+      attributes:
+        - "+ directReports: int"
+      methods:
+        - "+ approveLeave(e: Employee): bool"
+        - "+ runReview(e: Employee)"
+
+    - id: engineer
+      name: Engineer
+      attributes:
+        - "+ stack: List<String>"
+      methods:
+        - "+ commit(code: String)"
+
+    - id: senior_engineer
+      name: SeniorEngineer
+      attributes:
+        - "+ mentees: int"
+      methods:
+        - "+ review(pr: PullRequest)"
+        - "+ mentor(e: Engineer)"
+
+  relationships:
+    - from: employee
+      to: person
+      type: inheritance
+
+    - from: manager
+      to: employee
+      type: inheritance
+
+    - from: engineer
+      to: employee
+      type: inheritance
+
+    - from: senior_engineer
+      to: engineer
+      type: inheritance
+
+    - from: person
+      to: address
+      type: composition
+      multiplicity: "1"
+      label: lives at
+
+    - from: manager
+      to: department
+      type: association
+      multiplicity: "1"
+      label: leads
+
+    - from: department
+      to: employee
+      type: aggregation
+      multiplicity: "1..*"
+      label: employs
+
+    - from: project
+      to: employee
+      type: association
+      multiplicity: "*"
+      label: staffed by

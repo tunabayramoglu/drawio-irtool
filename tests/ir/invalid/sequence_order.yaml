@@ -1,0 +1,12 @@
+diagram:
+  type: sequence
+  title: Wrong Object Order
+  objects:
+    - id: db
+      type: entity
+    - id: user
+      type: actor
+  messages:
+    - from: user
+      to: db
+      label: query

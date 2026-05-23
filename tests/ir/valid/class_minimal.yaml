@@ -1,0 +1,15 @@
+diagram:
+  type: class
+  title: Minimal Class
+  classes:
+    - id: animal
+      name: Animal
+      attributes: ["name: String"]
+      methods: ["speak()"]
+    - id: dog
+      name: Dog
+      methods: ["bark()"]
+  relationships:
+    - from: dog
+      to: animal
+      type: inheritance

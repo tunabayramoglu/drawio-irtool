@@ -1,0 +1,14 @@
+diagram:
+  type: dfd
+  title: Has Orphan
+  entities:
+    - id: user
+      type: external_entity
+    - id: proc
+      type: process
+    - id: lonely_store
+      type: store
+  flows:
+    - from: user
+      to: proc
+      label: x

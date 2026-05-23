@@ -1,0 +1,16 @@
+diagram:
+  type: std
+  title: Minimal STD
+  states:
+    - id: idle
+      is_initial: true
+    - id: working
+    - id: done
+      is_final: true
+  transitions:
+    - from: idle
+      to: working
+      event: start
+    - from: working
+      to: done
+      event: complete

@@ -1,0 +1,13 @@
+diagram:
+  type: dfd
+  title: Has Unknown Field
+  bogus_field: oops
+  entities:
+    - id: a
+      type: process
+    - id: b
+      type: process
+  flows:
+    - from: a
+      to: b
+      label: x
