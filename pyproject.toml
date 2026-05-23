@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Validate, build, and render drawio diagrams from a small YAML IR"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = "MIT"
 authors = [{ name = "irtool contributors" }]
 keywords = ["drawio", "diagrams", "uml", "mcp", "yaml"]
 classifiers = [
