@@ -77,9 +77,10 @@ def _format_member(text: str) -> str:
 
 def _format_label(c: ClassDef) -> str:
     parts = []
-    if c.is_interface:
+    stereo = c.stereotype or ("interface" if c.is_interface else "")
+    if stereo:
         parts.append(
-            "<span style='font-size:11px;color:#666'>&laquo;interface&raquo;</span>"
+            f"<span style='font-size:11px;color:#666'>&laquo;{stereo}&raquo;</span>"
         )
     head = c.name or c.id
     if c.is_abstract or c.is_interface:

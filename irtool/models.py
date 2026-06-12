@@ -71,6 +71,7 @@ class ClassDef(NamedNode):
     methods: list[str] = []
     is_abstract: bool = False
     is_interface: bool = False
+    stereotype: str = ""
 
 
 class Relationship(Edge):

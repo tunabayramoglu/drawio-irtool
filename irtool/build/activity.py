@@ -225,6 +225,12 @@ def build(d: ActivityDiagram) -> BuildResult:
         return right_gutter, 1.0
 
     bidir = find_bidirectional(d.transitions)
+    def _edge_label(t: ActivityTransition) -> str:
+        text = t.label
+        if t.guard:
+            text = f"{text} [{t.guard}]" if text else f"[{t.guard}]"
+        return text
+
     connectors = []
     for idx, t in enumerate(d.transitions):
         src_lvl = levels[t.src]
@@ -280,7 +286,7 @@ def build(d: ActivityDiagram) -> BuildResult:
                     (channel_x, dst_cy),
                 ]
 
-            c = make_connector(idx, t.src, t.dst, t.label, EDGE_STYLE, track)
+            c = make_connector(idx, t.src, t.dst, _edge_label(t), EDGE_STYLE, track)
             c.waypoints = wp
             connectors.append(c)
             continue
@@ -288,7 +294,7 @@ def build(d: ActivityDiagram) -> BuildResult:
         track = None
         if (t.src, t.dst) in bidir:
             track = parallel_track(t.src, t.dst, abs_x[t.src], abs_x[t.dst])
-        connectors.append(make_connector(idx, t.src, t.dst, t.label, EDGE_STYLE, track))
+        connectors.append(make_connector(idx, t.src, t.dst, _edge_label(t), EDGE_STYLE, track))
 
     canvas_w = int(rightmost + _GUTTER_PAD + _MARGIN)
     canvas_h = _MARGIN + swimlane_h + _MARGIN
