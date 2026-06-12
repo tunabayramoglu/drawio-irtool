@@ -277,6 +277,20 @@ def build(d: StateDiagram) -> BuildResult:
                 )
             )
         else:
+            label = s.name or sid
+            if s.entry_action or s.exit_action:
+                parts = [f"<b>{label}</b>"]
+                if s.entry_action:
+                    parts.append(
+                        f"<span style='font-size:10px;color:#555'>"
+                        f"entry / {s.entry_action}</span>"
+                    )
+                if s.exit_action:
+                    parts.append(
+                        f"<span style='font-size:10px;color:#555'>"
+                        f"exit / {s.exit_action}</span>"
+                    )
+                label = "<br>".join(parts)
             shapes.append(
                 Shape(
                     id=sid,
@@ -284,7 +298,7 @@ def build(d: StateDiagram) -> BuildResult:
                     y=y,
                     width=_W,
                     height=_H,
-                    label=s.name or sid,
+                    label=label,
                     style=_STYLE,
                 )
             )

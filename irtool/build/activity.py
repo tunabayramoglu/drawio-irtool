@@ -32,6 +32,13 @@ _GUTTER_PAD = 40
 
 
 _NORMAL_W, _NORMAL_H = 180, 70
+# Horizontal gap between sibling columns when same-level nodes in the same
+# swimlane are spread side-by-side. Sized so edges from a shared source to
+# different siblings get naturally distinct orthogonal paths.
+_SIBLING_H_GAP = 40
+# Inner margin on each side of a swimlane (the strip between the lane
+# boundary stroke and the outermost sibling column).
+_LANE_MARGIN = 30
 _NODE_DIM_BY_TYPE: dict[ActivityType, tuple[int, int]] = {
     "start": (40, 40),
     "end": (40, 40),
@@ -126,41 +133,77 @@ def build(d: ActivityDiagram) -> BuildResult:
     levels = _assign_levels(d)
     max_level = max(levels.values(), default=0)
 
-    swimlane_h = _SWIMLANE_HEADER + _V_PAD + (max_level + 1) * (_NORMAL_H + _V_GAP)
+    # Group activities by (swimlane, level). Siblings at the same BFS depth
+    # within the same lane are spread HORIZONTALLY (side-by-side columns)
+    # so that fan-out edges from a shared source (e.g. decision) get
+    # naturally distinct orthogonal paths to each target.
+    lane_groups: dict[tuple[str, int], list[str]] = defaultdict(list)
+    for a in d.activities:
+        lane_groups[(a.swimlane, levels[a.id])].append(a.id)
+
+    decl_idx = {a.id: i for i, a in enumerate(d.activities)}
+
+    # Column index for each activity within its (swimlane, level) group.
+    col: dict[str, int] = {}
+    # Per-swimlane: max columns in any one BFS level → drives lane width.
+    max_cols: dict[str, int] = defaultdict(int)
+    for (lane_id, _lvl), members in lane_groups.items():
+        for ci, aid in enumerate(sorted(members, key=lambda m: decl_idx[m])):
+            col[aid] = ci
+        max_cols[lane_id] = max(max_cols[lane_id], len(members))
+
+    # Swimlane width = widest node in a column * columns + gaps + margins.
+    lane_width: dict[str, float] = {}
+    for sw in d.swimlanes:
+        n = max_cols.get(sw.id, 1)
+        # Each column must fit the widest node that could appear (decision
+        # rhombus = 90, normal rounded rect = 180, fork/join bar = 180).
+        col_w = _NORMAL_W + _SIBLING_H_GAP
+        lane_width[sw.id] = max(_SWIMLANE_W, 2 * _LANE_MARGIN + n * col_w - _SIBLING_H_GAP)
+
+    # Uniform row height — all levels use the same vertical spacing so
+    # activities align across lanes.
+    _ROW_H = _NORMAL_H + _V_GAP
+    swimlane_h = _SWIMLANE_HEADER + _V_PAD + (max_level + 1) * _ROW_H
 
     swimlane_by_id = {s.id: s for s in d.swimlanes}
     shapes: list[Shape] = []
 
-    # Swimlanes left-to-right in declaration order.
+    # Swimlanes left-to-right in declaration order, each with its computed
+    # width.
     swimlane_x: dict[str, float] = {}
-    for i, sw in enumerate(d.swimlanes):
-        x = _MARGIN + i * (_SWIMLANE_W + _INTER_LANE_GAP)
-        swimlane_x[sw.id] = x
+    cur_x = _MARGIN
+    for sw in d.swimlanes:
+        w = lane_width[sw.id]
+        swimlane_x[sw.id] = cur_x
         shapes.append(
             Shape(
                 id=sw.id,
-                x=x,
+                x=cur_x,
                 y=_MARGIN,
-                width=_SWIMLANE_W,
+                width=w,
                 height=swimlane_h,
                 label=sw.name or sw.id,
                 style=_SWIMLANE_STYLE,
             )
         )
+        cur_x += w + _INTER_LANE_GAP
 
-    # Activities as children of their swimlane (relative coords).
+    # Place activities as children of their swimlane. All siblings in the
+    # same (swimlane, level) group share the same Y but get distinct X
+    # columns so they sit side-by-side.
     for a in d.activities:
-        w, h = _NODE_DIM_BY_TYPE.get(a.type, (_NORMAL_W, _NORMAL_H))
-        # Center horizontally within swimlane.
-        rel_x = (_SWIMLANE_W - w) / 2
-        # Row y = header + padding + level * (row_height). Row height stays
-        # constant so activities align across lanes.
-        row_top = _SWIMLANE_HEADER + _V_PAD + levels[a.id] * (_NORMAL_H + _V_GAP)
-        # Vertically center the activity within its row.
-        rel_y = row_top + (_NORMAL_H - h) / 2
-        # Control nodes (start/end/merge/fork/join) are conventionally
-        # unlabeled in UML — only show text for activities and decisions
-        # where the label carries meaning. Allow override via explicit `name`.
+        act_w, act_h = _NODE_DIM_BY_TYPE.get(a.type, (_NORMAL_W, _NORMAL_H))
+        lw = lane_width[a.swimlane]
+        n_cols_siblings = max_cols.get(a.swimlane, 1)
+        total_cols_w = n_cols_siblings * (_NORMAL_W + _SIBLING_H_GAP) - _SIBLING_H_GAP
+        start_x = (lw - total_cols_w) / 2
+        ci = col[a.id]
+        col_cx = start_x + ci * (_NORMAL_W + _SIBLING_H_GAP) + _NORMAL_W / 2
+        rel_x = col_cx - act_w / 2
+        # Vertical: all siblings at this level share the same row.
+        row_top = _SWIMLANE_HEADER + _V_PAD + levels[a.id] * _ROW_H
+        rel_y = row_top + (_NORMAL_H - act_h) / 2
         if a.type in ("start", "end", "merge", "fork", "join"):
             label = a.name if (a.name and a.name != a.id) else ""
         else:
@@ -170,61 +213,55 @@ def build(d: ActivityDiagram) -> BuildResult:
                 id=a.id,
                 x=rel_x,
                 y=rel_y,
-                width=w,
-                height=h,
+                width=act_w,
+                height=act_h,
                 label=label,
                 style=_NODE_STYLE[a.type],
                 parent=a.swimlane,
             )
         )
 
-    # Connectors. Compute absolute positions so we can detect long edges
-    # (≥2 levels apart OR skipping ≥1 lane) and route them via a gutter.
+    # Absolute positions for edge routing.
     activity_by_id = {a.id: a for a in d.activities}
     lane_idx = {sw.id: i for i, sw in enumerate(d.swimlanes)}
     abs_pos: dict[str, tuple[float, float, float, float]] = {}
     for a in d.activities:
-        w, h = _NODE_DIM_BY_TYPE.get(a.type, (_NORMAL_W, _NORMAL_H))
-        rel_x = (_SWIMLANE_W - w) / 2
-        row_top = _SWIMLANE_HEADER + _V_PAD + levels[a.id] * (_NORMAL_H + _V_GAP)
-        rel_y = row_top + (_NORMAL_H - h) / 2
+        act_w, act_h = _NODE_DIM_BY_TYPE.get(a.type, (_NORMAL_W, _NORMAL_H))
+        lw = lane_width[a.swimlane]
+        n_cols_siblings = max_cols.get(a.swimlane, 1)
+        total_cols_w = n_cols_siblings * (_NORMAL_W + _SIBLING_H_GAP) - _SIBLING_H_GAP
+        start_x = (lw - total_cols_w) / 2
+        ci = col[a.id]
+        col_cx = start_x + ci * (_NORMAL_W + _SIBLING_H_GAP) + _NORMAL_W / 2
+        rel_x = col_cx - act_w / 2
+        row_top = _SWIMLANE_HEADER + _V_PAD + levels[a.id] * _ROW_H
+        rel_y = row_top + (_NORMAL_H - act_h) / 2
         abs_pos[a.id] = (
             swimlane_x[a.swimlane] + rel_x,
             _MARGIN + rel_y,
-            w,
-            h,
+            act_w,
+            act_h,
         )
 
-    rightmost = max(swimlane_x.values()) + _SWIMLANE_W
+    rightmost = max(swimlane_x[lid] + lane_width[lid] for lid in lane_width)
     leftmost = min(swimlane_x.values())
     right_gutter = rightmost + _GUTTER_PAD
     left_gutter = leftmost - _GUTTER_PAD
     abs_x = {sid: pos[0] for sid, pos in abs_pos.items()}
 
-    # Inside the empty inset between a lane's boundary and its centered cells
-    # (cells are 30px from a 240-wide lane's edges, so any x in the first/last
-    # ~25px is collision-free). We pick a value safely inside that strip.
     _CHANNEL_INSET = 15
 
     def channel_for(src_lane_i: int, dst_lane_i: int) -> tuple[float, float]:
-        """Return (channel_x, src_exit_x_track) for a cross-lane edge.
-
-        Routes inside the empty left/right margin of the lane immediately
-        adjacent to src in the direction of dst — i.e. visually distinct
-        from the lane boundary stroke, but still in a cell-free strip.
-        Falls back to the outer gutter for same-lane long edges.
-        """
         if dst_lane_i > src_lane_i:
-            # Right side of src: enter src's right neighbour at its left strip.
             next_lane = d.swimlanes[src_lane_i + 1].id
             return swimlane_x[next_lane] + _CHANNEL_INSET, 1.0
         if dst_lane_i < src_lane_i:
-            # Left side of src: enter src's left neighbour at its right strip.
             prev_lane = d.swimlanes[src_lane_i - 1].id
-            return swimlane_x[prev_lane] + _SWIMLANE_W - _CHANNEL_INSET, 0.0
+            return swimlane_x[prev_lane] + lane_width[prev_lane] - _CHANNEL_INSET, 0.0
         return right_gutter, 1.0
 
     bidir = find_bidirectional(d.transitions)
+
     def _edge_label(t: ActivityTransition) -> str:
         text = t.label
         if t.guard:
@@ -259,19 +296,10 @@ def build(d: ActivityDiagram) -> BuildResult:
                 entry = (0.5, 1.0)
 
             if level_span <= 1:
-                # Adjacent-level cross-lane edge — natural flow direction.
-                # Exit src bottom (or top), cross the empty gap row between
-                # BFS levels, enter dst top (or bottom). No side channel.
                 exit_track = (0.5, 1.0) if dst_lvl >= src_lvl else (0.5, 0.0)
                 track = (exit_track[0], exit_track[1], entry[0], entry[1])
                 wp = [(src_cx, via_y), (dst_cx, via_y)]
             else:
-                # Level-skipping edge — must dodge cells in intermediate rows.
-                # Route through an empty channel in the adjacent lane's
-                # margin, exiting src from the side facing the channel and
-                # ENTERING DST FROM ITS SIDE (matching the channel side) so
-                # this edge doesn't stack on top of any direct top-entry
-                # arrow that another transition may use.
                 channel_x, exit_x = channel_for(src_lane, dst_lane)
                 dst_cy = ty + th / 2
                 if channel_x <= tx:
@@ -279,12 +307,9 @@ def build(d: ActivityDiagram) -> BuildResult:
                 elif channel_x >= tx + tw:
                     side_entry = (1.0, 0.5)
                 else:
-                    side_entry = entry  # fallback (shouldn't normally hit)
+                    side_entry = entry
                 track = (exit_x, 0.5, side_entry[0], side_entry[1])
-                wp = [
-                    (channel_x, src_cy),
-                    (channel_x, dst_cy),
-                ]
+                wp = [(channel_x, src_cy), (channel_x, dst_cy)]
 
             c = make_connector(idx, t.src, t.dst, _edge_label(t), EDGE_STYLE, track)
             c.waypoints = wp

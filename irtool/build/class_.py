@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 
-from ..models import ClassDef, ClassDiagram
+from ..models import ClassDef, ClassDiagram, EnumDef
 from ._common import EDGE_STYLE, make_connector
 from .types import BuildResult, Shape
 
@@ -76,6 +76,7 @@ def _format_member(text: str) -> str:
 
 
 def _format_label(c: ClassDef) -> str:
+    """Format class box label."""
     parts = []
     stereo = c.stereotype or ("interface" if c.is_interface else "")
     if stereo:
@@ -92,6 +93,18 @@ def _format_label(c: ClassDef) -> str:
     if c.methods:
         parts.append("<hr style='margin:2px 0'>")
         parts.extend(_format_member(m) for m in c.methods)
+    return "<br>".join(parts)
+
+
+def _format_enum_label(e: EnumDef) -> str:
+    """Format enumeration box label."""
+    parts = [
+        "<span style='font-size:11px;color:#666'>&laquo;enumeration&raquo;</span>",
+        f"<b>{e.name or e.id}</b>",
+    ]
+    if e.values:
+        parts.append("<hr style='margin:2px 0'>")
+        parts.extend(e.values)
     return "<br>".join(parts)
 
 
@@ -164,6 +177,15 @@ def _inheritance_components(
 
 def build(d: ClassDiagram) -> BuildResult:
     heights = {c.id: _measure(c) for c in d.classes}
+    # Enums: rendered like classes, auto-stereotyped as «enumeration».
+    _ENUM_ROW = 18
+    _ENUM_HEADER = 30
+    for e in d.enums:
+        h = _ENUM_HEADER
+        if e.values:
+            h += len(e.values) * _ENUM_ROW + _SECTION_PAD
+        heights[e.id] = max(_MIN_H, h)
+
     parents, children = _inheritance_graph(d)
     components = _inheritance_components(d, parents, children)
 
@@ -319,6 +341,26 @@ def build(d: ClassDiagram) -> BuildResult:
             )
         )
 
+    # Enums rendered in a row below all classes.
+    if d.enums:
+        all_x = [p[0] for p in positions.values()]
+        all_y = [p[1] + heights[cid] for cid, p in positions.items()]
+        enum_y = max(all_y, default=_MARGIN) + _V_GAP
+        enum_x = _MARGIN
+        for e in d.enums:
+            shapes.append(
+                Shape(
+                    id=e.id,
+                    x=enum_x,
+                    y=enum_y,
+                    width=_W,
+                    height=heights[e.id],
+                    label=_format_enum_label(e),
+                    style=_BOX_STYLE,
+                )
+            )
+            enum_x += _W + _H_GAP
+
     # ----- Edges -----------------------------------------------------------
     connectors = []
     for idx, r in enumerate(d.relationships):
@@ -336,9 +378,19 @@ def build(d: ClassDiagram) -> BuildResult:
         connectors.append(conn)
 
     canvas_w = int(max(p[0] + _W for p in positions.values()) + _MARGIN)
-    canvas_h = int(
-        max(p[1] + heights[cid] for cid, p in positions.items()) + _MARGIN
-    )
+    # Ensure enums fit on canvas
+    if d.enums:
+        enum_max_x = max(s.x + s.width for s in shapes if any(e.id == s.id for e in d.enums))
+        enum_max_y = max(s.y + s.height for s in shapes if any(e.id == s.id for e in d.enums))
+        canvas_w = max(canvas_w, int(enum_max_x + _MARGIN))
+        canvas_h = int(max(
+            max(p[1] + heights[cid] for cid, p in positions.items()),
+            enum_max_y,
+        ) + _MARGIN)
+    else:
+        canvas_h = int(
+            max(p[1] + heights[cid] for cid, p in positions.items()) + _MARGIN
+        )
     return BuildResult(
         title=d.title,
         shapes=shapes,

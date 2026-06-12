@@ -198,33 +198,63 @@ def build(d: SequenceDiagram) -> BuildResult:
         )
 
     connectors = []
+    # Build bar shape lookup: for a (lifeline_id, msg_idx) where the
+    # lifeline has an activation bar spanning that message, return the
+    # bar's shape id and its top Y coordinate. Messages exit from the
+    # lifeline cell (src always lifeline) and enter at the activation
+    # bar's edge when one exists, otherwise enter at the lifeline.
+    acts = _activations(d)
+    bar_info: dict[tuple[str, int], tuple[str, float, float]] = {}
+    for lid, start_i, end_i in acts:
+        bar_id = f"__act_{lid}_{start_i}__"
+        top_y = _msg_y(start_i) - 6
+        bar_h = (
+            (_msg_y(end_i) if end_i < m else _MARGIN + lifeline_h - _BOTTOM_PAD / 2)
+            - top_y
+        )
+        for mi in range(start_i, min(end_i, m) + 1):
+            bar_info[(lid, mi)] = (bar_id, top_y, bar_h)
+
     for idx, msg in enumerate(d.messages):
-        y_in_cell = _HEADER_H + _INITIAL_GAP + idx * _MSG_GAP
-        ratio = y_in_cell / lifeline_h
+        ratio_lifeline = (_HEADER_H + _INITIAL_GAP + idx * _MSG_GAP) / lifeline_h
         style = _MSG_STYLE.get(msg.type, _MSG_STYLE["call"])
         if msg.src == msg.dst:
-            # Self-message. Exit right side at ratio_up, traverse two
-            # waypoints to the right of the lifeline, re-enter at
-            # ratio_down. Absolute waypoint coords keep drawio's orthogonal
-            # router from inventing its own (often disastrous) path.
-            arc_y_up = _MARGIN + ratio * lifeline_h
+            arc_y_up = _MARGIN + ratio_lifeline * lifeline_h
             arc_y_down = arc_y_up + 40
             lifeline_right = next(
                 s.x + s.width for s in shapes if s.id == msg.src
             )
             arc_x = lifeline_right + 40
             ratio_down = (arc_y_down - _MARGIN) / lifeline_h
-            track = (1.0, ratio, 1.0, min(ratio_down, 1.0))
+            track = (1.0, ratio_lifeline, 1.0, min(ratio_down, 1.0))
             connector = make_connector(
                 idx, msg.src, msg.dst, msg.label, style, track
             )
             connector.waypoints = [(arc_x, arc_y_up), (arc_x, arc_y_down)]
             connectors.append(connector)
         else:
-            track = (0.5, ratio, 0.5, ratio)
-            connectors.append(
-                make_connector(idx, msg.src, msg.dst, msg.label, style, track)
-            )
+            src_i = d.objects.index(next(o for o in d.objects if o.id == msg.src))
+            dst_i = d.objects.index(next(o for o in d.objects if o.id == msg.dst))
+            # Source = lifeline cell (perimeter=lifelinePerimeter handles
+            # the centered exit pin for us).
+            src_cell = msg.src
+            exit_x = 0.5
+            exit_y = ratio_lifeline
+            # Target = activation bar when one exists at this message idx,
+            # otherwise fall back to the destination lifeline cell.
+            dst_entry = bar_info.get((msg.dst, idx))
+            if dst_entry is not None:
+                dst_cell, bar_top, bar_h = dst_entry
+                msg_abs_y = _msg_y(idx)
+                entry_y = (msg_abs_y - bar_top) / max(bar_h, 1)
+                entry_x = 0.0 if src_i < dst_i else 1.0
+            else:
+                dst_cell = msg.dst
+                entry_x = 0.5
+                entry_y = ratio_lifeline
+            track = (exit_x, exit_y, entry_x, entry_y)
+            c = make_connector(idx, src_cell, dst_cell, msg.label, style, track)
+            connectors.append(c)
 
     canvas_w = _MARGIN + (n - 1) * _X_GAP + _LIFELINE_W + _MARGIN
     canvas_h = _MARGIN + lifeline_h + _MARGIN

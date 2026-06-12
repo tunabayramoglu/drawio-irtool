@@ -45,6 +45,19 @@ class Flow(Edge):
     label: str = Field(min_length=1)
 
 
+class DFDAnnotation(_Model):
+    """Dashed rectangular annotation grouping DFD entities.
+
+    `label` renders as the header text (e.g. ``[ACID Transaction Boundary]``).
+    `entities` is the list of entity ids enclosed by this annotation.
+    `color` is an optional hex border colour (default ``#888888``).
+    """
+
+    label: str
+    entities: list[str] = []
+    color: str = "#888888"
+
+
 class DFDDiagram(_Model):
     type: Literal["dfd"]
     title: str
@@ -52,6 +65,7 @@ class DFDDiagram(_Model):
     level: int | None = None
     entities: list[DFDEntity]
     flows: list[Flow]
+    annotations: list[DFDAnnotation] = []
 
 
 # ---------------------------- Class ----------------------------
@@ -88,11 +102,18 @@ class Relationship(Edge):
     target_multiplicity: str = ""
 
 
+class EnumDef(NamedNode):
+    """UML enumeration with ordered literal values."""
+
+    values: list[str] = []
+
+
 class ClassDiagram(_Model):
     type: Literal["class"]
     title: str
     description: str | None = None
     classes: list[ClassDef]
+    enums: list[EnumDef] = []
     relationships: list[Relationship] = []
 
 
@@ -113,6 +134,10 @@ class State(NamedNode):
     # meaningful when `parent` is also set.
     is_history: bool = False
     history_deep: bool = False
+    # UML entry/exit actions. Rendered in the state box as
+    # "entry / action" and "exit / action" lines below the name.
+    entry_action: str = ""
+    exit_action: str = ""
 
 
 class Transition(Edge):

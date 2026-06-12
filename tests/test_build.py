@@ -49,7 +49,7 @@ def _count_nodes(ir: IR) -> int:
     if hasattr(d, "entities"):
         return len(d.entities)
     if hasattr(d, "classes"):
-        return len(d.classes)
+        return len(d.classes) + (len(d.enums) if hasattr(d, "enums") else 0)
     if hasattr(d, "states"):
         return len(d.states)
     if hasattr(d, "objects"):
