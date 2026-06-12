@@ -17,14 +17,10 @@ import json
 import sys
 from pathlib import Path
 
-import yaml
-from pydantic import ValidationError
-
 from .build import ir_to_xml
 from .issues import Severity
-from .models import IR
 from .render import RenderError, Renderer
-from .validate import summarize, validate_path
+from .validate import parse_and_validate, summarize, validate_path
 
 
 # ----------------------------- check -----------------------------
@@ -124,10 +120,16 @@ def cmd_build(args: argparse.Namespace) -> int:
         print(f"{src}: file does not exist", file=sys.stderr)
         return 2
 
-    # Validate first so build never sees malformed IR.
-    issues = validate_path(src)
+    try:
+        text = src.read_text(encoding="utf-8")
+    except OSError as e:
+        print(f"{src}: cannot read: {e}", file=sys.stderr)
+        return 1
+
+    issues, ir = parse_and_validate(text)
     errs, warns = summarize(issues)
-    if errs:
+
+    if ir is None or errs:
         print(f"{src}: refusing to build, {errs} validation error(s):",
               file=sys.stderr)
         for issue in issues:
@@ -137,13 +139,6 @@ def cmd_build(args: argparse.Namespace) -> int:
     for issue in issues:
         if issue.severity == Severity.WARNING:
             print(f"  warning: {issue.format()}", file=sys.stderr)
-
-    try:
-        data = yaml.safe_load(src.read_text(encoding="utf-8"))
-        ir = IR.model_validate(data)
-    except (yaml.YAMLError, ValidationError) as e:  # already validated, but be defensive
-        print(f"{src}: unexpected parse failure: {e}", file=sys.stderr)
-        return 1
 
     xml = ir_to_xml(ir)
     out = Path(args.out) if args.out else src.with_suffix(".drawio")
