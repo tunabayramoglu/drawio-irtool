@@ -18,7 +18,7 @@ if (-not (Test-Path $serverDir)) {
     Write-Host "draw-image-export2 already cloned at $serverDir"
 }
 
-Write-Host "Installing dependencies (this can take a few minutes — Puppeteer pulls Chrome) ..."
+Write-Host "Installing dependencies (this can take a few minutes -- Puppeteer pulls Chrome) ..."
 Push-Location $serverDir
 try {
     npm install
